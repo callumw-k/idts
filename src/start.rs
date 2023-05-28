@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 
 use crate::{
     check_empty_args,
@@ -11,16 +11,14 @@ pub fn start(args: &[String]) -> Result<()> {
     check_empty_args(args);
     let (_, file_path, date_string) = get_date_values()?;
     let file_contents = get_file_string(&file_path)?;
-    let mut data: Vec<Entry> = if !file_contents.is_empty() {
-        parse_file_string::<Entry>(&file_contents)?
-    } else {
-        Vec::new()
-    };
-    if let Some(last_item) = data.last() {
-        if !last_item.stop_date.is_some() {
-            return Err(anyhow!("Time tracking has already started"));
+    let mut data: Vec<Entry> =
+        parse_file_string::<Entry>(&file_contents).unwrap_or_else(|_| Vec::new());
+
+    if let Some(last_item) = data.last_mut() {
+        if last_item.stop_date.is_none() {
+            last_item.stop_date = Some(date_string.clone());
         }
-    }
+    };
     data.push(Entry {
         id: (data.len() + 1) as u32,
         tags: args.to_vec(),
