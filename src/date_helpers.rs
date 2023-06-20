@@ -7,6 +7,10 @@ pub fn get_duration(start_date: DateTime<Local>, end_date: DateTime<Local>) -> D
     end_date - start_date
 }
 
+pub fn this_made_in_container(start: String) -> String {
+    start
+}
+
 pub fn get_date_values() -> anyhow::Result<(DateTime<Local>, PathBuf, std::string::String)> {
     let date = Local::now();
     let file_name = date.format("%Y-%m-%d").to_string() + ".json";
